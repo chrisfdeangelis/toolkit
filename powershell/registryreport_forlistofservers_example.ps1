@@ -4,14 +4,15 @@ Write-Host "Running..."
 
 $TimeStamp = Get-Date -Format "yyyy-MM-dd_HHmmss"
 
-$OutputFile = Join-Path ([Environment]::GetFolderPath("Desktop")) "PRD799_Citrix_Session_Time_Limits_$TimeStamp.csv"
+$OutputFile = Join-Path ([Environment]::GetFolderPath("Desktop")) "Citrix_Session_Time_Limits_$TimeStamp.csv"
 
  
 
 $Servers = @(
 
-    'rt1prd799c1', 'rt1prd799c2', 'rt1prd799c3', 'rt1prd799c5', 'rt1prd799c6', 'rt1prd799c7', 'rt1prd799c8', 'rt1prd799c9', 'rt1prd799c10', 'rt1prd799c11', 'rt1prd799c12', 'rt1prd799c13', 'rt1prd799c14', 'rt1prd799c15', 'rt1prd799c16', 'rt1prd799c17', 'rt1prd799c18', 'rt1prd799c19', 'rt1prd799c20', 'rt1prd799c21', 'rt1prd799c22', 'rt1prd799c23', 'rt1prd799c24'
-
+    'server01',
+    'server02',
+    'server03'
 )
 
  
