@@ -94,8 +94,7 @@ Relevant RDS timeout values:
 Example PowerShell:
 
 ```powershell
-Get-ItemProperty `
-    "HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services"
+Get-ItemProperty "HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services"
 ```
 
 ---
@@ -191,8 +190,7 @@ For this reason, **do not assume every registry value under `Policies` is curren
 ### 1. Check the registry
 
 ```powershell
-Get-ItemProperty `
-    "HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services"
+Get-ItemProperty "HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services"
 ```
 
 ### 2. Generate a Group Policy report
