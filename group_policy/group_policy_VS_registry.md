@@ -94,8 +94,7 @@ Relevant RDS timeout values:
 Example PowerShell:
 
 ```powershell
-Get-ItemProperty `
-    "HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services"
+Get-ItemProperty "HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services"
 ```
 
 ---
