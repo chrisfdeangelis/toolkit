@@ -1,13 +1,13 @@
 ##Script for Services Preview
 ```powershell
 Get-CimInstance Win32_Service |
-Where-Object { $_.StartName -eq "am/rt_sbx_pmxadmin" } |
+Where-Object { $_.StartName -eq "AM\rt_sbx_pmxadmin" } |
 Select-Object Name, DisplayName, State, StartMode, StartName
 ```
 
 ##Script for Services
 ```powershell
-$ServiceAccount = "am/rt_sbx_pmxadmin"
+$ServiceAccount = "AM\rt_sbx_pmxadmin"
 
 $services = Get-CimInstance Win32_Service |
     Where-Object { $_.StartName -eq $ServiceAccount }
@@ -35,7 +35,7 @@ Write-Host "`nCompleted."
 ```
 ##Script for Scheduled Tasks Preview
 ```powershell
-$TaskAccount = "am/rt_sbx_pmxadmin"
+$TaskAccount = "AM\rt_sbx_pmxadmin"
 
 Get-ScheduledTask |
 Where-Object { $_.Principal.UserId -eq $TaskAccount } |
@@ -45,7 +45,7 @@ Select-Object TaskName, TaskPath, State,
 
 ##Script for Scheduled Tasks
 ```powershell
-$TaskAccount = "am/rt_sbx_pmxadmin"
+$TaskAccount = "AM\rt_sbx_pmxadmin"
 
 $tasks = Get-ScheduledTask |
     Where-Object { $_.Principal.UserId -eq $TaskAccount }
