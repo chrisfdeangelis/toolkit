@@ -186,5 +186,9 @@ foreach ($task in $tasks) {
     Write-Host " -> Password updated and enabled"
 }
 
+# Run the gettns scheduled task
+Write-Host "Starting scheduled task: gettns"
+Start-ScheduledTask -TaskName "gettns"
+
 Write-Host "`nCompleted."
 ```
