@@ -55,7 +55,7 @@ Select-Object TaskName, TaskPath, State,
     @{Name="RunAs";Expression={$_.Principal.UserId}}
 ```
 
-### Disable schedules tasks
+### Disable scheduled tasks
 
 ```powershell
 $TaskAccount = "AM\rt_sbx_pmxadmin"
@@ -106,13 +106,13 @@ if ($services.Count -eq 0) {
 foreach ($service in $services) {
     Write-Host "Processing: $($service.Name)"
 
-    # Stop the service if it's running
-    if ($service.State -eq "Running") {
-        Start-Service -Name $service.Name -Force -ErrorAction Continue
-    }
+    # Re-enable the service
+    Set-Service -Name $service.Name -StartupType Automatic
 
-    # Disable the service
-    Set-Service -Name $service.Name -StartupType Enabled
+    # Start the service if it exists
+    if ($service.State -ne "Running") {
+        Start-Service -Name $service.Name -ErrorAction Continue
+    }
 
     Write-Host " -> Enabled"
 }
@@ -148,7 +148,7 @@ if (-not $tasks) {
 }
 
 foreach ($task in $tasks) {
-    Write-Host "Disabling: $($task.TaskPath)$($task.TaskName)"
+    Write-Host "Enabling: $($task.TaskPath)$($task.TaskName)"
 
     Enable-ScheduledTask -TaskName $task.TaskName -TaskPath $task.TaskPath
 
