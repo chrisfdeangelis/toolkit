@@ -106,6 +106,11 @@ Select-Object Name, DisplayName, State, StartMode, StartName
 ```powershell
 $ServiceAccount = "AM\rt_sbx_pmxadmin"
 
+# Prompt once for the new password
+$Credential = Get-Credential -UserName $ServiceAccount -Message "Enter the NEW password for the service account"
+
+$Password = $Credential.GetNetworkCredential().Password
+
 $services = Get-CimInstance Win32_Service |
     Where-Object { $_.StartName -eq $ServiceAccount }
 
@@ -117,15 +122,19 @@ if ($services.Count -eq 0) {
 foreach ($service in $services) {
     Write-Host "Processing: $($service.Name)"
 
+    # Update the stored service credentials
+    Invoke-CimMethod -InputObject $service -MethodName Change -Arguments @{
+        StartName = $ServiceAccount
+        StartPassword = $Password
+    } | Out-Null
+
     # Re-enable the service
     Set-Service -Name $service.Name -StartupType Automatic
 
-    # Start the service if it exists
-    if ($service.State -ne "Running") {
-        Start-Service -Name $service.Name -ErrorAction Continue
-    }
+    # Start the service
+    Start-Service -Name $service.Name -ErrorAction Continue
 
-    Write-Host " -> Enabled"
+    Write-Host " -> Password updated, enabled, and started"
 }
 
 Write-Host "`nCompleted."
