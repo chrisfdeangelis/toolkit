@@ -40,6 +40,17 @@ foreach ($service in $services) {
 
 Write-Host "`nCompleted."
 ```
+
+### Process Refuses to stop
+
+```powershell
+Get-CimInstance Win32_Service |
+Where-Object Name -eq "MatrikonOPC Tunneller SSC" |
+Select-Object Name, ProcessId, State
+```
+```powershell
+Stop-Process -Id <PID> -Force
+```
 ___
 
 ## 2 - Disable scheduled tasks
