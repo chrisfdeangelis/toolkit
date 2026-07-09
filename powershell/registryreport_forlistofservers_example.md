@@ -1,3 +1,8 @@
+# Registry Values Reporting
+
+This powershell script can be used to report on current policies in place based on registry values, regardless of overarching GPOs.  You may need to adjust it to include different registry values based on your needs. 
+
+```powershell```
 Write-Host "Running..."
 
  
@@ -94,3 +99,4 @@ Write-Host "Report saved to: " -ForegroundColor Green
 Write-Host $OutputFile
 
 Read-Host "Press Enter to exit"
+```
