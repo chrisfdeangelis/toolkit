@@ -159,6 +159,9 @@ Select-Object TaskName, TaskPath, State,
 ```powershell
 $TaskAccount = "AM\rt_sbx_pmxadmin"
 
+$Credential = Get-Credential -UserName $TaskAccount -Message "Enter the NEW password for the scheduled task account"
+$Password = $Credential.GetNetworkCredential().Password
+
 $tasks = Get-ScheduledTask |
     Where-Object { $_.Principal.UserId -eq $TaskAccount }
 
@@ -168,11 +171,19 @@ if (-not $tasks) {
 }
 
 foreach ($task in $tasks) {
-    Write-Host "Enabling: $($task.TaskPath)$($task.TaskName)"
+    Write-Host "Processing: $($task.TaskPath)$($task.TaskName)"
 
-    Enable-ScheduledTask -TaskName $task.TaskName -TaskPath $task.TaskPath
+    Set-ScheduledTask `
+        -TaskName $task.TaskName `
+        -TaskPath $task.TaskPath `
+        -User $TaskAccount `
+        -Password $Password
 
-    Write-Host " -> Enabled"
+    Enable-ScheduledTask `
+        -TaskName $task.TaskName `
+        -TaskPath $task.TaskPath
+
+    Write-Host " -> Password updated and enabled"
 }
 
 Write-Host "`nCompleted."
