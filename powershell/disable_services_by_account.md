@@ -7,14 +7,14 @@ ___
 
 ```powershell
 Get-CimInstance Win32_Service |
-Where-Object { $_.StartName -eq "AM\rt_sbx_pmxadmin" } |
+Where-Object { $_.StartName -eq "AM\rt_dev_pmxadmin" } |
 Select-Object Name, DisplayName, State, StartMode, StartName
 ```
 
 ### Disable services
 
 ```powershell
-$ServiceAccount = "AM\rt_sbx_pmxadmin"
+$ServiceAccount = "AM\rt_dev_pmxadmin"
 
 $services = Get-CimInstance Win32_Service |
     Where-Object { $_.StartName -eq $ServiceAccount }
@@ -58,7 +58,7 @@ ___
 ### Preview scheduled tasks
 
 ```powershell
-$TaskAccount = "AM\rt_sbx_pmxadmin"
+$TaskAccount = "AM\rt_dev_pmxadmin"
 
 Get-ScheduledTask |
 Where-Object { $_.Principal.UserId -eq $TaskAccount } |
@@ -69,7 +69,7 @@ Select-Object TaskName, TaskPath, State,
 ### Disable scheduled tasks
 
 ```powershell
-$TaskAccount = "AM\rt_sbx_pmxadmin"
+$TaskAccount = "AM\rt_dev_pmxadmin"
 
 $tasks = Get-ScheduledTask |
     Where-Object { $_.Principal.UserId -eq $TaskAccount }
@@ -97,14 +97,14 @@ ___
 
 ```powershell
 Get-CimInstance Win32_Service |
-Where-Object { $_.StartName -eq "AM\rt_sbx_pmxadmin" } |
+Where-Object { $_.StartName -eq "AM\rt_dev_pmxadmin" } |
 Select-Object Name, DisplayName, State, StartMode, StartName
 ```
 
 ### Enable services
 
 ```powershell
-$ServiceAccount = "AM\rt_sbx_pmxadmin"
+$ServiceAccount = "AM\rt_dev_pmxadmin"
 
 # Prompt once for the new password
 $Credential = Get-Credential -UserName $ServiceAccount -Message "Enter the NEW password for the service account"
@@ -146,7 +146,7 @@ ___
 ### Preview scheduled tasks
 
 ```powershell
-$TaskAccount = "AM\rt_sbx_pmxadmin"
+$TaskAccount = "AM\rt_dev_pmxadmin"
 
 Get-ScheduledTask |
 Where-Object { $_.Principal.UserId -eq $TaskAccount } |
@@ -157,7 +157,7 @@ Select-Object TaskName, TaskPath, State,
 ### Enable schedule tasks
 
 ```powershell
-$TaskAccount = "AM\rt_sbx_pmxadmin"
+$TaskAccount = "AM\rt_dev_pmxadmin"
 
 $Credential = Get-Credential -UserName $TaskAccount -Message "Enter the NEW password for the scheduled task account"
 $Password = $Credential.GetNetworkCredential().Password
