@@ -183,6 +183,17 @@ git pull
 
 ---
 
+# Hard Reset Local Repository
+!Permanently deleted all uncommmited changes and any local commits that haven't been push!
+
+```bash
+git fetch origin
+git reset --hard origin/main
+git clean -fd
+```
+
+---
+
 # Fetch Without Merging
 
 ```bash
