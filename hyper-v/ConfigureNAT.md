@@ -1,136 +1,6 @@
-\# Hyper-V NAT Network Setup
+# Hyper-V NAT Network Setup
 
-
-
-\## Overview
-
-
-
-This guide creates a \*\*private Hyper-V network with NAT\*\*, allowing virtual machines to:
-
-
-
-\- Communicate with each other on an isolated network
-
-\- Access the internet through the Windows host
-
-\- Remain inaccessible from the physical LAN unless explicitly forwarded
-
-
-
-This is ideal for:
-
-
-
-\- Cybersecurity labs
-
-\- Malware analysis
-
-\- Active Directory labs
-
-\- Penetration testing environments
-
-
-
-\---
-
-
-
-\# Network Topology
-
-
-
-```
-
-&#x20;                Internet
-
-&#x20;                    │
-
-&#x20;            Home Router
-
-&#x20;         192.168.4.0/24
-
-&#x20;                    │
-
-&#x20;         Windows Hyper-V Host
-
-&#x20;       External NIC: 192.168.4.x
-
-&#x20;                    │
-
-&#x20;        Hyper-V Internal Switch
-
-&#x20;            "CyberLab"
-
-&#x20;                    │
-
-&#x20;     Host vEthernet Adapter
-
-&#x20;         10.10.10.1/24
-
-&#x20;                    │
-
-&#x20;         Windows NAT Gateway
-
-&#x20;                    │
-
-&#x20;       -----------------------
-
-&#x20;       │          │         │
-
-&#x20;     DC01      Kali      Ubuntu
-
-&#x20;  10.10.10.10  .20        .30
-
-```
-
-
-
-\---
-
-
-
-\# IP Scheme
-
-
-
-| Device | IP |
-
-|---------|-------------|
-
-| Host (vEthernet) | 10.10.10.1 |
-
-| Domain Controller | 10.10.10.10 |
-
-| Windows Client | 10.10.10.11 |
-
-| Kali Linux | 10.10.10.20 |
-
-| Ubuntu | 10.10.10.30 |
-
-| Gateway | 10.10.10.1 |
-
-| DNS | 10.10.10.10 (or 1.1.1.1 while building) |
-
-
-
-Subnet:
-
-
-
-```
-
-10.10.10.0/24
-
-```
-
-
-
-\---
-
-
-
-\# Step 1 – Create Internal Virtual Switch
+# Step 1 – Create Internal Virtual Switch
 
 
 
@@ -150,9 +20,9 @@ Create:
 
 
 
-\- Name: `CyberLab`
+- Name: `CyberLab`
 
-\- Type: `Internal`
+- Type: `Internal`
 
 
 
@@ -160,11 +30,11 @@ Apply.
 
 
 
-\---
+---
 
 
 
-\# Step 2 – Assign Host IP
+# Step 2 – Assign Host IP
 
 
 
@@ -204,11 +74,11 @@ Assign an IP:
 
 New-NetIPAddress `
 
-&#x20;   -IPAddress 10.10.10.1 `
+-IPAddress 10.10.10.1 `
 
-&#x20;   -PrefixLength 24 `
+-PrefixLength 24 `
 
-&#x20;   -InterfaceAlias "vEthernet (CyberLab)"
+-InterfaceAlias "vEthernet (CyberLab)"
 
 ```
 
@@ -244,11 +114,11 @@ Subnet Mask . . . . : 255.255.255.0
 
 
 
-\---
+---
 
 
 
-\# Step 3 – Create NAT
+# Step 3 – Create NAT
 
 
 
@@ -260,9 +130,9 @@ Create the NAT object:
 
 New-NetNat `
 
-&#x20;   -Name CyberLabNAT `
+-Name CyberLabNAT `
 
-&#x20;   -InternalIPInterfaceAddressPrefix 10.10.10.0/24
+-InternalIPInterfaceAddressPrefix 10.10.10.0/24
 
 ```
 
@@ -288,7 +158,7 @@ Expected:
 
 Name
 
-\----
+----
 
 CyberLabNAT
 
@@ -296,11 +166,11 @@ CyberLabNAT
 
 
 
-\---
+---
 
 
 
-\# Step 4 – Configure Virtual Machines
+# Step 4 – Configure Virtual Machines
 
 
 
@@ -308,7 +178,7 @@ Each VM connected to the \*\*CyberLab\*\* switch should have:
 
 
 
-\### Static Example
+### Static Example
 
 
 
@@ -372,11 +242,11 @@ or
 
 
 
-\---
+---
 
 
 
-\# Step 5 – Test Connectivity
+# Step 5 – Test Connectivity
 
 
 
@@ -420,11 +290,11 @@ If all three succeed, NAT is functioning correctly.
 
 
 
-\---
+---
 
 
 
-\# Useful PowerShell Commands
+# Useful PowerShell Commands
 
 
 
@@ -488,15 +358,15 @@ route print
 
 
 
-\---
+---
 
 
 
-\# Troubleshooting
+# Troubleshooting
 
 
 
-\## VM has no internet
+## VM has no internet
 
 
 
@@ -516,19 +386,19 @@ Ensure:
 
 
 
-\- NAT exists
+- NAT exists
 
-\- VM gateway is `10.10.10.1`
+- VM gateway is `10.10.10.1`
 
-\- VM is connected to the CyberLab switch
-
-
-
-\---
+- VM is connected to the CyberLab switch
 
 
 
-\## Host adapter missing
+---
+
+
+
+## Host adapter missing
 
 
 
@@ -536,19 +406,19 @@ If the vEthernet adapter doesn't exist:
 
 
 
-\- Delete the switch
+- Delete the switch
 
-\- Recreate the Internal switch
+- Recreate the Internal switch
 
-\- Reboot if necessary
-
-
-
-\---
+- Reboot if necessary
 
 
 
-\## DNS doesn't work
+---
+
+
+
+## DNS doesn't work
 
 
 
@@ -580,7 +450,7 @@ If IP addresses work but hostnames do not, the issue is DNS configuration.
 
 
 
-\---
+---
 
 
 
@@ -616,47 +486,7 @@ Then recreate it.
 
 
 
-\---
+---
 
 
-
-\# Security Notes
-
-
-
-Using an \*\*Internal\*\* switch with NAT provides several advantages over connecting lab VMs directly to your home network:
-
-
-
-\- VMs are isolated from your physical LAN.
-
-\- The host controls outbound internet access.
-
-\- Lab systems are not directly reachable from other devices on your network.
-
-\- Ideal for malware analysis and offensive security labs.
-
-
-
-If inbound access is ever required (for example, SSH or RDP into a lab VM), configure explicit port forwarding rather than exposing the entire VM to the LAN.
-
-
-
-\---
-
-
-
-\# References
-
-
-
-\- Hyper-V Internal Virtual Switch
-
-\- Windows NAT (`New-NetNat`)
-
-\- `Get-NetNat`
-
-\- `New-NetIPAddress`
-
-\- `Get-NetAdapter`
 
