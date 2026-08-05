@@ -1,492 +1,218 @@
 # Hyper-V NAT Network Setup
 
-# Step 1 – Create Internal Virtual Switch
+## Step 1 – Create Internal Virtual Switch
 
+Open **Hyper-V Manager**.
 
-
-Open \*\*Hyper-V Manager\*\*
-
-
-
-```
-
+```text
 Virtual Switch Manager
-
 ```
-
-
 
 Create:
 
+- **Name:** `CyberLab`
+- **Type:** `Internal`
 
-
-- Name: `CyberLab`
-
-- Type: `Internal`
-
-
-
-Apply.
-
-
+Click **Apply**.
 
 ---
 
-
-
-# Step 2 – Assign Host IP
-
-
+## Step 2 – Assign Host IP
 
 Open PowerShell as Administrator.
 
-
-
 Find the adapter:
 
-
-
 ```powershell
-
 Get-NetAdapter
-
 ```
-
-
 
 Locate:
 
-
-
-```
-
+```text
 vEthernet (CyberLab)
-
 ```
 
-
-
-Assign an IP:
-
-
+Assign an IP address:
 
 ```powershell
-
 New-NetIPAddress `
-
   -IPAddress 10.10.10.1 `
-
   -PrefixLength 24 `
-
   -InterfaceAlias "vEthernet (CyberLab)"
-
 ```
-
-
 
 Verify:
 
-
-
 ```powershell
-
 ipconfig
-
 ```
 
+Expected output:
 
-
-Expected:
-
-
-
-```
-
+```text
 vEthernet (CyberLab)
 
-
-
 IPv4 Address . . . . : 10.10.10.1
-
 Subnet Mask . . . . : 255.255.255.0
-
 ```
-
-
 
 ---
 
-
-
-# Step 3 – Create NAT
-
-
+## Step 3 – Create NAT
 
 Create the NAT object:
 
-
-
 ```powershell
-
 New-NetNat `
-
   -Name CyberLabNAT `
-
   -InternalIPInterfaceAddressPrefix 10.10.10.0/24
-
 ```
-
-
 
 Verify:
 
-
-
 ```powershell
-
 Get-NetNat
-
 ```
 
+Expected output:
 
-
-Expected:
-
-
-
-```
-
+```text
 Name
-
 ----
-
 CyberLabNAT
-
 ```
-
-
 
 ---
 
+## Step 4 – Configure Virtual Machines
 
+Each VM connected to the **CyberLab** switch should have a static network configuration similar to the following:
 
-# Step 4 – Configure Virtual Machines
-
-
-
-Each VM connected to the \*\*CyberLab\*\* switch should have:
-
-
-
-### Static Example
-
-
-
-IP
-
-
-
-```
-
-10.10.10.20
-
-```
-
-
-
-Subnet
-
-
-
-```
-
-255.255.255.0
-
-```
-
-
-
-Gateway
-
-
-
-```
-
-10.10.10.1
-
-```
-
-
-
-DNS
-
-
-
-```
-
-10.10.10.10
-
-```
-
-
-
-or
-
-
-
-```
-
-1.1.1.1
-
-```
-
-
+- **IP Address:** `10.10.10.20`
+- **Subnet Mask:** `255.255.255.0`
+- **Default Gateway:** `10.10.10.1`
+- **DNS Server:** `10.10.10.10`
+  - or `1.1.1.1` while building the lab
 
 ---
 
+## Step 5 – Test Connectivity
 
-
-# Step 5 – Test Connectivity
-
-
-
-Ping gateway:
-
-
+Ping the gateway:
 
 ```bash
-
 ping 10.10.10.1
-
 ```
-
-
 
 Ping Cloudflare:
 
-
-
 ```bash
-
 ping 1.1.1.1
-
 ```
 
-
-
-Test DNS:
-
-
+Test DNS resolution:
 
 ```bash
-
 ping google.com
-
 ```
 
-
-
-If all three succeed, NAT is functioning correctly.
-
-
+If all three tests succeed, NAT is functioning correctly.
 
 ---
 
+## Useful PowerShell Commands
 
-
-# Useful PowerShell Commands
-
-
-
-List adapters:
-
-
+List network adapters:
 
 ```powershell
-
 Get-NetAdapter
-
 ```
-
-
 
 View IP addresses:
 
-
-
 ```powershell
-
 Get-NetIPAddress
-
 ```
 
-
-
-View NAT:
-
-
+View NAT configuration:
 
 ```powershell
-
 Get-NetNat
-
 ```
 
-
-
-Remove NAT:
-
-
+Remove the NAT configuration:
 
 ```powershell
-
 Remove-NetNat -Name CyberLabNAT
-
 ```
 
-
-
-View routes:
-
-
+View the routing table:
 
 ```powershell
-
 route print
-
 ```
-
-
 
 ---
 
+## Troubleshooting
 
+### VM has no internet access
 
-# Troubleshooting
-
-
-
-## VM has no internet
-
-
-
-Check:
-
-
+Verify the NAT configuration:
 
 ```powershell
-
 Get-NetNat
-
 ```
-
-
 
 Ensure:
 
-
-
-- NAT exists
-
-- VM gateway is `10.10.10.1`
-
-- VM is connected to the CyberLab switch
-
-
+- NAT exists.
+- The VM's default gateway is `10.10.10.1`.
+- The VM is connected to the **CyberLab** virtual switch.
 
 ---
 
+### Host adapter is missing
 
+If the `vEthernet (CyberLab)` adapter doesn't exist:
 
-## Host adapter missing
-
-
-
-If the vEthernet adapter doesn't exist:
-
-
-
-- Delete the switch
-
-- Recreate the Internal switch
-
-- Reboot if necessary
-
-
+- Delete the virtual switch.
+- Recreate the Internal virtual switch.
+- Reboot the host if necessary.
 
 ---
 
+### DNS doesn't work
 
+Try using one of the following DNS servers:
 
-## DNS doesn't work
-
-
-
-Try:
-
-
-
-```
-
+```text
 1.1.1.1
-
 ```
-
-
 
 or
 
-
-
-```
-
+```text
 8.8.8.8
-
 ```
-
-
 
 If IP addresses work but hostnames do not, the issue is DNS configuration.
 
-
-
 ---
 
+### NAT already exists
 
-
-\## NAT already exists
-
-
-
-Check:
-
-
+Check for existing NAT objects:
 
 ```powershell
-
 Get-NetNat
-
 ```
 
-
-
-Delete:
-
-
+Delete the existing NAT:
 
 ```powershell
-
 Remove-NetNat -Name CyberLabNAT
-
 ```
 
-
-
-Then recreate it.
-
-
-
----
-
-
-
+Then recreate it using the commands in **Step 3**.
