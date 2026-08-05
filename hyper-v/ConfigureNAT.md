@@ -74,11 +74,11 @@ Assign an IP:
 
 New-NetIPAddress `
 
--IPAddress 10.10.10.1 `
+  -IPAddress 10.10.10.1 `
 
--PrefixLength 24 `
+  -PrefixLength 24 `
 
--InterfaceAlias "vEthernet (CyberLab)"
+  -InterfaceAlias "vEthernet (CyberLab)"
 
 ```
 
@@ -130,9 +130,9 @@ Create the NAT object:
 
 New-NetNat `
 
--Name CyberLabNAT `
+  -Name CyberLabNAT `
 
--InternalIPInterfaceAddressPrefix 10.10.10.0/24
+  -InternalIPInterfaceAddressPrefix 10.10.10.0/24
 
 ```
 
