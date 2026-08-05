@@ -21,6 +21,14 @@ Click **Apply**.
 
 Open PowerShell as Administrator.
 
+Alternatively Win + R (configure under Properties):
+
+```powershell
+ncpa.cpl
+```
+
+Configure in
+
 Find the adapter:
 
 ```powershell
